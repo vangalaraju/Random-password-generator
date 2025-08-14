@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <link href="pass.css" rel="stylesheet">
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const PasswordGeneratorApp = () => {
+      const [passwordLength, setPasswordLength] = React.useState(8);
+      const [includeLetters, setIncludeLetters] = React.useState(true);
+      const [includeNumbers, setIncludeNumbers] = React.useState(true);
+      const [includeSymbols, setIncludeSymbols] = React.useState(false);
+      const [generatedPassword, setGeneratedPassword] = React.useState('');
+
+      const generatePassword = () => {
+        let characters = '';
+        if (includeLetters) characters += 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        if (includeNumbers) characters += '0123456789';
+        if (includeSymbols) characters += '!@#$%^&*()_-+={}[]|;:<>,.?/~';
+
+        if (!characters) {
+          setGeneratedPassword('Error: Select at least one character type.');
+          return;
+        }
+
+        let password = '';
+        for (let i = 0; i < passwordLength; i++) {
+          password += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        setGeneratedPassword(password);
+      };
+
+      return (
+        <div>
+          <h1> Random Password Generator</h1>
+          <div className="input-group">
+            <label htmlFor="passwordLength">Password Length:</label>
+            <input
+              type="number"
+              id="passwordLength"
+              value={passwordLength}
+              onChange={(e) => setPasswordLength(parseInt(e.target.value, 10))}
+              min="6"
+              max="128"
+            />
+          </div>
+          <div className="checkbox-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={includeLetters}
+                onChange={(e) => setIncludeLetters(e.target.checked)}
+              />
+              Include Letters
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={includeNumbers}
+                onChange={(e) => setIncludeNumbers(e.target.checked)}
+              />
+              Include Numbers
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={includeSymbols}
+                onChange={(e) => setIncludeSymbols(e.target.checked)}
+              />
+              Include Symbols
+            </label>
+          </div>
+          <button onClick={generatePassword}>Generate Password</button>
+          {generatedPassword && (
+            <div id="generatedPassword">
+              Generated Password: {generatedPassword}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<PasswordGeneratorApp />, document.getElementById('root'));
+  </script>
+    
+    <script type="text/python">
+        import random
+import string
+
+def get_password_length():
+    """Prompts the user for the desired password length and validates the input."""
+    while True:
+        try:
+            length_str = input("Enter the desired password length (positive integer): ")
+            length = int(length_str)
+            if length > 0:
+                return length
+            else:
+                print("Password length must be a positive integer.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+def get_character_set_preferences():
+    """Allows the user to specify which character types to include."""
+    use_letters = input("Include letters? (y/n): ").lower() == 'y'
+    use_numbers = input("Include numbers? (y/n): ").lower() == 'y'
+    use_symbols = input("Include symbols? (y/n): ").lower() == 'y'
+
+    if not (use_letters or use_numbers or use_symbols):
+        print("You must select at least one character type.")
+        return get_character_set_preferences()  # Recursively ask again
+    return use_letters, use_numbers, use_symbols
+
+def generate_random_password(length, use_letters, use_numbers, use_symbols):
+    """Generates a random password based on the given criteria."""
+    characters = ''
+    if use_letters:
+        characters += string.ascii_letters  # Contains both uppercase and lowercase letters
+    if use_numbers:
+        characters += string.digits       # Contains digits 0-9
+    if use_symbols:
+        characters += string.punctuation  # Contains various punctuation symbols
+
+    if not characters:
+        return "Error: No character types selected."
+
+    # Randomization: Selecting random characters from the combined set
+    password = ''.join(random.choice(characters) for _ in range(length))
+    return password
+
+if __name__== "_main_":
+    print("Welcome to the Simple Random Password Generator!")
+
+    # User Input Validation: Getting and validating password length
+    password_length = get_password_length()
+
+    # User Input Validation: Getting and validating character set preferences
+    include_letters, include_numbers, include_symbols = get_character_set_preferences()
+
+    # Character Set Handling: Combining selected character sets
+    generated_password = generate_random_password(
+        length=password_length,
+        use_letters=include_letters,
+        use_numbers=include_numbers,
+        use_symbols=include_symbols
+    )
+
+    print("\nGenerated Password:", generated_password)
+    print("Thank you for using the password generator!")
+</script>
+
+</body>
+</html>
